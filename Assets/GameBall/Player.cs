@@ -13,6 +13,11 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GlobalVariables.CatchMode == true && HeldBall != null)
+        {
+            HeldBall.transform.position = PlayerHand.position;
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
             if (GlobalVariables.CatchMode == true)
@@ -51,8 +56,6 @@ public class Player : MonoBehaviour
             return;
 
         HeldBall = ballCollider;
-        HeldBall.transform.parent = PlayerHand;
-        HeldBall.transform.localPosition = Vector3.zero;
         HeldBall.attachedRigidbody.isKinematic = true;
         HeldBall.attachedRigidbody.useGravity = false;
         HeldBall.attachedRigidbody.velocity = Vector3.zero;
