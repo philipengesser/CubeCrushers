@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class CubeSpawner : MonoBehaviour
+public class CubeSpawner : NetworkBehaviour
 {
     public GameObject CubePrefab;
     public GameObject CurrentCube;
@@ -12,6 +13,10 @@ public class CubeSpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (IsClient == true)
+            return;
+
+
         if (CurrentCube == null)
         {
             SpawnCube();

@@ -1,21 +1,46 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : NetworkBehaviour
 {
     public Transform playerTransform;
 
     [SerializeField]
     public LayerMask BallMask;
 
+    [ServerRpc(RequireOwnership =false)]
+    public void SetBallPositionServerRpc(Vector3 ballPosition)
+    {
+        print($"Server {ballPosition}");
+        SetBallPosition(ballPosition);
+    }
+
+    public void SetBallPosition(Vector3 ballPosition)
+    {
+        print($"SetBallPosition {ballPosition}");
+        GameBall.s.transform.position = ballPosition;
+    }
+
+    //[ClientRpc]
+    //public void SetBallPositionClientRpc(Vector3 ballPosition)
+    //{
+    //    print($"Client {ballPosition}");
+    //    GameBall.s.transform.position = ballPosition;
+    //}
 
     // Update is called once per frame
     void Update()
     {
         if (GlobalVariables.CatchMode == true && HeldBall != null)
         {
-            HeldBall.transform.position = PlayerHand.position;
+            print($"Player {PlayerHand.position}");
+
+            if (IsServer)
+                SetBallPosition(PlayerHand.position);
+            else
+                SetBallPositionServerRpc(PlayerHand.position);
         }
 
         if (Input.GetMouseButtonDown(0))
