@@ -13,7 +13,7 @@ public class CubeSpawner : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (IsClient == true)
+        if (IsServer == false)
             return;
 
 
@@ -31,5 +31,6 @@ public class CubeSpawner : NetworkBehaviour
         CurrentCube = 
             Instantiate(CubePrefab, spawnPos, Quaternion.identity);
         CurrentCube.transform.localScale = new Vector3(1, 1, 1) * GlobalVariables.CubeSize;
+        CurrentCube.GetComponent<NetworkObject>().Spawn(true);
     }
 }

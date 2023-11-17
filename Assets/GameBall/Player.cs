@@ -10,38 +10,16 @@ public class Player : NetworkBehaviour
     [SerializeField]
     public LayerMask BallMask;
 
-    [ServerRpc(RequireOwnership =false)]
-    public void SetBallPositionServerRpc(Vector3 ballPosition)
-    {
-        print($"Server {ballPosition}");
-        SetBallPosition(ballPosition);
-    }
-
-    public void SetBallPosition(Vector3 ballPosition)
-    {
-        print($"SetBallPosition {ballPosition}");
-        GameBall.s.transform.position = ballPosition;
-    }
-
-    //[ClientRpc]
-    //public void SetBallPositionClientRpc(Vector3 ballPosition)
-    //{
-    //    print($"Client {ballPosition}");
-    //    GameBall.s.transform.position = ballPosition;
-    //}
-
     // Update is called once per frame
     void Update()
     {
-        if (GlobalVariables.CatchMode == true && HeldBall != null)
+        if (HeldBall != null)
         {
-            print($"Player {PlayerHand.position}");
-
-            if (IsServer)
-                SetBallPosition(PlayerHand.position);
-            else
-                SetBallPositionServerRpc(PlayerHand.position);
+            HeldBall.transform.position = PlayerHand.transform.position;
         }
+
+        if (IsOwner == false)
+            return;
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -53,7 +31,7 @@ public class Player : NetworkBehaviour
             {
                 TryToHitBall();
             }
-            
+
         }
     }
 
@@ -66,28 +44,66 @@ public class Player : NetworkBehaviour
     {
         if (HeldBall == null)
         {
-            GrabBall();
+            GrabBallLocal();
         }
         else
         {
-            ThrowBall();
+            ThrowBallLocal();
         }
     }
 
-    private void GrabBall()
+    private void GrabBallLocal()
     {
         Collider ballCollider = DetectBall();
         if (ballCollider == null)
             return;
 
-        HeldBall = ballCollider;
+        GrabBall();
+        GrabBallServerRpc();
+    }
+
+    [ServerRpc]
+    private void GrabBallServerRpc()
+    {
+        GrabBallClientRpc();
+    }
+
+    [ClientRpc]
+    private void GrabBallClientRpc()
+    {
+        GrabBall();
+    }
+
+    private void GrabBall()
+    {
+        HeldBall = GameBall.s.GetComponent<Collider>();
         HeldBall.attachedRigidbody.isKinematic = true;
         HeldBall.attachedRigidbody.useGravity = false;
         HeldBall.attachedRigidbody.velocity = Vector3.zero;
     }
 
+    private void ThrowBallLocal()
+    {
+        ThrowBall();
+        ThrowBallServerRpc();
+    }
+
+    [ServerRpc]
+    private void ThrowBallServerRpc()
+    {
+        ThrowBallClientRpc();
+    }
+
+    [ClientRpc]
+    private void ThrowBallClientRpc()
+    {
+        ThrowBall();
+    }
     private void ThrowBall()
     {
+        if (HeldBall == null)
+            return;
+
         HeldBall.transform.parent = null;
         HeldBall.attachedRigidbody.useGravity = true;
         HeldBall.attachedRigidbody.isKinematic = false;
@@ -102,7 +118,6 @@ public class Player : NetworkBehaviour
         Collider ballCollider = DetectBall();
         if (ballCollider != null)
         {
-            LaunchBall(ballCollider);
             LaunchBall(ballCollider);
         }
     }
@@ -130,7 +145,7 @@ public class Player : NetworkBehaviour
     }
     private void LaunchBall(Collider ballCollider)
     {
-        Vector3 launchDir = Camera.main.transform.forward;
+        Vector3 launchDir = transform.forward;
 
         // angle the launch up a little
         launchDir += Vector3.up * GlobalVariables.upwardAngle;
