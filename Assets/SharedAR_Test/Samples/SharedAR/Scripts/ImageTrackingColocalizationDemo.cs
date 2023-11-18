@@ -151,9 +151,10 @@ namespace Niantic.Lightship.AR.Samples
             _targetImageInstructionPanel.SetActive(true);
 
             //Create a room options and return it
-
             return ISharedSpaceRoomOptions.CreateLightshipRoomOptions(
                 _roomName, 32, "image tracking colocalization demo");
+
+            
         }
 
         private void OnServerStarted()

@@ -11,7 +11,7 @@ public class ShortWall : MonoBehaviour
         if (collision.gameObject.CompareTag("Ball"))
         {
             if (LosePointsOnHit)
-                GlobalVariables.Score -= 3;
+                GlobalData.s.Score -= 3;
 
             Rigidbody ballRigidbody = collision.gameObject.GetComponent<Rigidbody>();
             float absoluteX = Mathf.Abs(ballRigidbody.velocity.x);

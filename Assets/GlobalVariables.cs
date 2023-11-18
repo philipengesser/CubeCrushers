@@ -19,10 +19,4 @@ public class GlobalVariables : MonoBehaviour
     public static float sphereCastDistance = 0;
     public static float launchForce = 10;
     public static float upwardAngle = 0;
-    
-
-
-    #region GameInfo
-    public static int Score;
-    #endregion
 }

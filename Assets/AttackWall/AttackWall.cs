@@ -21,7 +21,7 @@ public class AttackWall : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            GlobalVariables.Score -= 5;
+            GlobalData.s.Score -= 5;
             Destroy(this.gameObject);
         }
     }

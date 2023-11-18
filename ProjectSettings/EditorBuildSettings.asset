@@ -6,7 +6,10 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
+    path: Assets/Scenes/MainMenu.unity
+    guid: 47c5b68e38528584682b22f29ac1c5b7
+  - enabled: 1
+    path: Assets/Scenes/Match.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects:
     Niantic.Lightship.AR.LightshipSettings: {fileID: 11400000, guid: fae582cb6cc022442afed1e2a44dd3d2, type: 2}

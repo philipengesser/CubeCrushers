@@ -10,6 +10,11 @@ public class Player : NetworkBehaviour
     [SerializeField]
     public LayerMask BallMask;
 
+    private void Start()
+    {
+        print("Player Created!");
+    }
+
     // Update is called once per frame
     void Update()
     {

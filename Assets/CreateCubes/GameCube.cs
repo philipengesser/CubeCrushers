@@ -10,7 +10,7 @@ public class GameCube : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ball"))
         {
-            GlobalVariables.Score += 1;
+            GlobalData.s.Score += 1;
             //Destroy(this.gameObject);
             StartCoroutine(DestoryCube(collision.GetContact(0).point));
         }
