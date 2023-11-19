@@ -156,7 +156,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 920d9209cbc949b41b8f44704f6ca292, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -205,6 +205,7 @@ GameObject:
   - component: {fileID: 7271415962887056184}
   - component: {fileID: 9032639381507066146}
   - component: {fileID: 1865681981812484760}
+  - component: {fileID: 3266394943035833657}
   m_Layer: 0
   m_Name: NetworkedPlayer
   m_TagString: Untagged
@@ -311,3 +312,16 @@ MonoBehaviour:
     m_Bits: 64
   PlayerHand: {fileID: 1732840054}
   HeldBall: {fileID: 0}
+--- !u!114 &3266394943035833657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4706502972645866292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57c28ed28c284b8bbb08e7d5bded1bd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _putInSharedOrigin: 1
