@@ -19,7 +19,8 @@ public class RoomsDisplay : MonoBehaviour
     public void RefreshDisplay()
     {
         var getAllRoomsStatus = RoomManagementService.GetAllRooms(out List<IRoom> rooms);
-        if (getAllRoomsStatus == RoomManagementServiceStatus.Ok)
+        if (getAllRoomsStatus == RoomManagementServiceStatus.Ok ||
+            getAllRoomsStatus == RoomManagementServiceStatus.NotFound)
         {
             RefreshDisplayUI(rooms);
         }
@@ -42,7 +43,8 @@ public class RoomsDisplay : MonoBehaviour
         {
             var obj = Instantiate(RoomButtonPrefab, RoomButtonHolder);
             obj.GetComponent<RoomButton>().RoomNameText.text = 
-                $"{room.RoomParams.Name} : {room.Networking.PeerIDs.Count}";
+                $"{room.RoomParams.Name}";
+            // : {room.Networking.PeerIDs.Count}
             CurrentRoomButtons.Add(obj);
         }
         
@@ -53,7 +55,6 @@ public class RoomsDisplay : MonoBehaviour
         RoomManagementService.GetAllRooms(out List<IRoom> rooms);
         foreach (var room in rooms)
         {
-            print(room.Networking.PeerIDs.Count);
             RoomManagementService.DeleteRoom(room.RoomParams.RoomID);
         }
 

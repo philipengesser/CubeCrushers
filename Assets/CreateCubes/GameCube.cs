@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class GameCube : MonoBehaviour
+public class GameCube : NetworkBehaviour
 {
     public Renderer MyRenderer;
 
@@ -11,12 +12,31 @@ public class GameCube : MonoBehaviour
         if (collision.gameObject.CompareTag("Ball"))
         {
             GlobalData.s.Score += 1;
+            DestroyCubeServerRpc(collision.GetContact(0).point);
             //Destroy(this.gameObject);
-            StartCoroutine(DestoryCube(collision.GetContact(0).point));
         }
     }
 
-    public IEnumerator DestoryCube(Vector3 hitPoint)
+    [ServerRpc(RequireOwnership = false)]
+    public void DestroyCubeServerRpc(Vector3 collisionPoint)
+    {
+        DestroyCubeClientRpc(collisionPoint);
+        StartCoroutine(DespawnCubeAfterDelay());
+    }
+
+    public IEnumerator DespawnCubeAfterDelay()
+    {
+        yield return new WaitForSeconds(1);
+        GetComponent<NetworkObject>().Despawn();
+    }
+
+    [ClientRpc]
+    public void DestroyCubeClientRpc(Vector3 collisionPoint)
+    {
+        StartCoroutine(DestoryCubeVisuals(collisionPoint));
+    }
+
+    public IEnumerator DestoryCubeVisuals(Vector3 hitPoint)
     {
         Material mat = MyRenderer.material;
         mat.SetVector("HitPoint", hitPoint);
@@ -24,11 +44,9 @@ public class GameCube : MonoBehaviour
         float t = .7f;
         while (t < 1)
         {
-            t += Time.deltaTime;
+            t += Time.deltaTime / (t * t * t * t * t * t * t * t * t) / 7;
             mat.SetFloat("FadeSize", 1 - t);
             yield return null;
         }
-
-        Destroy(this.gameObject);
     }
 }

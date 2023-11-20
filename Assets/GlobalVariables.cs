@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class GlobalVariables : MonoBehaviour
 {
+    public static float YPosition = 1.6f;
+    public static float XPosition = 0;
+    public static float ZPosition = 0;
     public static int GroundHeight = -2;
     public static bool FakeGround = true;
     public static bool MeshingIsVisible = false;

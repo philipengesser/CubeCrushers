@@ -27,9 +27,10 @@ public class CubeSpawner : NetworkBehaviour
     {
         float spawnX = Random.Range(-SpawnMaxX, SpawnMaxX);
         float spawnZ = Random.Range(-SpawnMaxZ, SpawnMaxZ);
-        Vector3 spawnPos = new Vector3(transform.position.x + spawnX, 
-            GlobalVariables.CubeHeight, 
-            transform.position.z + spawnZ);
+        Vector3 spawnPos = transform.position +
+            (transform.right * spawnX) +
+            (transform.forward * spawnZ);
+        spawnPos.y = GlobalVariables.CubeHeight;
         CurrentCube = 
             Instantiate(CubePrefab, spawnPos, Quaternion.identity);
         CurrentCube.transform.localScale = new Vector3(1, 1, 1) * GlobalVariables.CubeSize;
