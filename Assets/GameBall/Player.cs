@@ -10,6 +10,30 @@ public class Player : NetworkBehaviour
     [SerializeField]
     public LayerMask BallMask;
 
+    public GameObject LocalGameBallPrefab;
+    private GameObject localGameBall;
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner == false)
+            return;
+
+        base.OnNetworkSpawn();
+        SpawnLocalGameBallServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SpawnLocalGameBallServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        var clientId = serverRpcParams.Receive.SenderClientId;
+        localGameBall = Instantiate(LocalGameBallPrefab);
+        if (IsOwnedByServer)
+            localGameBall.SetActive(true);
+        else
+            localGameBall.SetActive(false);
+        localGameBall.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+    }
+
     private void Start()
     {
         print("Player Created!");
@@ -18,13 +42,13 @@ public class Player : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (HeldBall != null)
-        {
-            HeldBall.transform.position = PlayerHand.transform.position;
-        }
-
         if (IsOwner == false)
             return;
+
+        if (HeldBallRigidbody != null)
+        {
+            HeldBallRigidbody.transform.position = PlayerHand.transform.position;
+        }
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -40,14 +64,24 @@ public class Player : NetworkBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+
+    }
+
+    private void FixedUpdate()
+    {
+
+    }
+
     #region Catch And Throw stuff
 
     public Transform PlayerHand;
-    public Collider HeldBall;
+    public Rigidbody HeldBallRigidbody;
 
     private void CatchAndThrow()
     {
-        if (HeldBall == null)
+        if (HeldBallRigidbody == null)
         {
             GrabBallLocal();
         }
@@ -63,28 +97,31 @@ public class Player : NetworkBehaviour
         if (ballCollider == null)
             return;
 
-        GrabBall();
-        GrabBallServerRpc();
+        GrabBall(ballCollider.gameObject);
+        GrabBallServerRpc(ballCollider.gameObject);
     }
 
     [ServerRpc]
-    private void GrabBallServerRpc()
+    private void GrabBallServerRpc(NetworkObjectReference gameBall)
     {
-        GrabBallClientRpc();
+        GrabBallClientRpc(gameBall);
     }
 
     [ClientRpc]
-    private void GrabBallClientRpc()
+    private void GrabBallClientRpc(NetworkObjectReference gameBall)
     {
-        GrabBall();
+        GrabBall(gameBall);
     }
 
-    private void GrabBall()
+    private void GrabBall(GameObject ballObject)
     {
-        HeldBall = GameBall.s.GetComponent<Collider>();
-        HeldBall.attachedRigidbody.isKinematic = true;
-        HeldBall.attachedRigidbody.useGravity = false;
-        HeldBall.attachedRigidbody.velocity = Vector3.zero;
+        ballObject.SetActive(false);
+
+        localGameBall.SetActive(true);
+        HeldBallRigidbody = localGameBall.GetComponent<Rigidbody>();
+        HeldBallRigidbody.isKinematic = true;
+        HeldBallRigidbody.useGravity = false;
+        HeldBallRigidbody.velocity = Vector3.zero;
     }
 
     private void ThrowBallLocal()
@@ -106,14 +143,14 @@ public class Player : NetworkBehaviour
     }
     private void ThrowBall()
     {
-        if (HeldBall == null)
+        if (HeldBallRigidbody == null)
             return;
 
-        HeldBall.transform.parent = null;
-        HeldBall.attachedRigidbody.useGravity = true;
-        HeldBall.attachedRigidbody.isKinematic = false;
-        LaunchBall(HeldBall);
-        HeldBall = null;
+        HeldBallRigidbody.transform.parent = null;
+        HeldBallRigidbody.useGravity = true;
+        HeldBallRigidbody.isKinematic = false;
+        LaunchBall(HeldBallRigidbody);
+        HeldBallRigidbody = null;
     }
 
     #endregion
@@ -123,7 +160,7 @@ public class Player : NetworkBehaviour
         Collider ballCollider = DetectBall();
         if (ballCollider != null)
         {
-            LaunchBall(ballCollider);
+            LaunchBall(ballCollider.GetComponent<Rigidbody>());
         }
     }
 
@@ -148,7 +185,7 @@ public class Player : NetworkBehaviour
 
         return ballColliderToReturn;
     }
-    private void LaunchBall(Collider ballCollider)
+    private void LaunchBall(Rigidbody ballRigidbody)
     {
         Vector3 launchDir = transform.forward;
 
@@ -157,7 +194,7 @@ public class Player : NetworkBehaviour
         launchDir = launchDir.normalized;
 
 
-        ballCollider.attachedRigidbody.velocity = launchDir * GlobalVariables.launchForce;
-        ballCollider.GetComponent<GameBall>().JustHitByPlayer = .2f;
+        ballRigidbody.velocity = launchDir * GlobalVariables.launchForce;
+        ballRigidbody.GetComponent<GameBall>().JustHitByPlayer = .2f;
     }
 }

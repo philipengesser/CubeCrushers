@@ -310,8 +310,9 @@ MonoBehaviour:
   BallMask:
     serializedVersion: 2
     m_Bits: 64
+  LocalGameBallPrefab: {fileID: 2150802432815746769, guid: 7bdbda1d297fd504e974d672c110bf0b, type: 3}
   PlayerHand: {fileID: 1732840054}
-  HeldBall: {fileID: 0}
+  HeldBallRigidbody: {fileID: 0}
 --- !u!114 &3266394943035833657
 MonoBehaviour:
   m_ObjectHideFlags: 0

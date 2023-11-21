@@ -32,6 +32,7 @@ public class ShortWall : MonoBehaviour
             //main.startRotationZ = transform.rotation.eulerAngles.z;
             WallHitSystem.Emit(3);
 
+            return;
 
             if (NetworkManager.Singleton != null &&
                 NetworkManager.Singleton.ConnectedClients.Count > 1)

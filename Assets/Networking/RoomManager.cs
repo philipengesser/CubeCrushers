@@ -18,7 +18,9 @@ public class RoomManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
         SharedSpaceManager.sharedSpaceManagerStateChanged += OnColocalizationTrackingStateChanged;
+
 
         var imageTrackingOptions = ISharedSpaceTrackingOptions.CreateImageTrackingOptions(
                 ImageForLocalization, ImageSizeInMeters);
@@ -42,6 +44,8 @@ public class RoomManager : MonoBehaviour
         }
     }
 
+
+
     private void OnColocalizationTrackingStateChanged(SharedSpaceManager.SharedSpaceManagerStateChangeEventArgs args)
     {
         if (args.Tracking)
@@ -51,7 +55,7 @@ public class RoomManager : MonoBehaviour
             HowToLocalizeInstructionPanel.SetActive(false);
 
             // create an origin marker object and set under the sharedAR origin
-            CubeIndicator = Instantiate(SharedRootMarkerPrefab,
+            Instantiate(SharedRootMarkerPrefab,
                 SharedSpaceManager.SharedArOriginObject.transform, false);
             // SharedScene code to make sure the walls are in the same place on all devices
             Destroy(SharedSceneSetupInstance);
@@ -73,32 +77,6 @@ public class RoomManager : MonoBehaviour
         else
         {
             Debug.Log($"Image tracking not tracking?");
-        }
-    }
-
-
-    public TextMeshProUGUI Parent1;
-    public TextMeshProUGUI Position1;
-    public TextMeshProUGUI Scale1;
-    public TextMeshProUGUI Parent2;
-    public TextMeshProUGUI Position2;
-    public TextMeshProUGUI Scale2;
-
-    public GameObject CubeIndicator;
-
-    private void Update()
-    {
-        if (SharedSceneSetupInstance?.transform.parent != null)
-        {
-            Parent1.text = SharedSceneSetupInstance.transform.parent.name;
-            Position1.text = SharedSceneSetupInstance.transform.position.ToString();
-            Scale1.text = SharedSceneSetupInstance.transform.localScale.ToString();
-        }
-        if (CubeIndicator != null)
-        {
-            Parent2.text = CubeIndicator.transform.parent.name;
-            Position2.text = CubeIndicator.transform.position.ToString();
-            Scale2.text = CubeIndicator.transform.localScale.ToString();
         }
     }
 }

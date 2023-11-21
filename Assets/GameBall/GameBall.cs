@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameBall : MonoBehaviour
 {
-    public static GameBall s;
+    //public static GameBall s;
 
     public Renderer MyRenderer;
     public Material NormalMat;
@@ -15,10 +15,10 @@ public class GameBall : MonoBehaviour
     public float JustCollided = 0;
     public float JustHitByPlayer = 0;
 
-    private void Awake()
-    {
-        s = this;
-    }
+    //private void Awake()
+    //{
+    //    s = this;
+    //}
 
     private void Update()
     {
