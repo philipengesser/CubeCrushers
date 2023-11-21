@@ -2608,14 +2608,14 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 4080898897
       objectReference: {fileID: 0}
-    - target: {fileID: 1852027428, guid: 192adb26eaab02c4fb188a18d7079716, type: 3}
-      propertyPath: m_Enabled
+    - target: {fileID: 868405577276968542, guid: 192adb26eaab02c4fb188a18d7079716, type: 3}
+      propertyPath: InitialModule.rotation3D
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 868405577276968542, guid: 192adb26eaab02c4fb188a18d7079716, type: 3}
+      propertyPath: InitialModule.startRotationY.scalar
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8035855091144317264, guid: 192adb26eaab02c4fb188a18d7079716, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: aa61526ca6e1004439faf13c0bac36ae, type: 2}
     - target: {fileID: 8035855092209837758, guid: 192adb26eaab02c4fb188a18d7079716, type: 3}
       propertyPath: m_RootOrder
       value: 11
