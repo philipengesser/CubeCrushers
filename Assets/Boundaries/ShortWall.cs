@@ -32,10 +32,9 @@ public class ShortWall : MonoBehaviour
             //main.startRotationZ = transform.rotation.eulerAngles.z;
             WallHitSystem.Emit(3);
 
-            return;
-
             if (NetworkManager.Singleton != null &&
-                NetworkManager.Singleton.ConnectedClients.Count > 1)
+                (NetworkManager.Singleton.IsServer == false || 
+                NetworkManager.Singleton.ConnectedClients.Count > 1))
             {
                 GlobalData.s.Score -= 2;
                 collision.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;

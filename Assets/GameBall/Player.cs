@@ -11,14 +11,15 @@ public class Player : NetworkBehaviour
     public LayerMask BallMask;
 
     public GameObject LocalGameBallPrefab;
-    private GameObject localGameBall;
+    public NetworkVariable<NetworkObjectReference> localGameBall = new NetworkVariable<NetworkObjectReference>();
 
     public override void OnNetworkSpawn()
     {
+        base.OnNetworkSpawn();
         if (IsOwner == false)
             return;
 
-        base.OnNetworkSpawn();
+        
         SpawnLocalGameBallServerRpc();
     }
 
@@ -26,12 +27,25 @@ public class Player : NetworkBehaviour
     public void SpawnLocalGameBallServerRpc(ServerRpcParams serverRpcParams = default)
     {
         var clientId = serverRpcParams.Receive.SenderClientId;
-        localGameBall = Instantiate(LocalGameBallPrefab);
-        if (IsOwnedByServer)
-            localGameBall.SetActive(true);
-        else
-            localGameBall.SetActive(false);
-        localGameBall.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+        var obj = Instantiate(LocalGameBallPrefab);
+
+        obj.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+        localGameBall.Value = obj;
+        StartCoroutine(DelaySetLocalGameBall(obj));
+    }
+
+    IEnumerator DelaySetLocalGameBall(GameObject obj)
+    {
+        yield return new WaitForSeconds(3);
+        // Disable the ball if the player is not the server so that we only start with 1 ball
+        SetLocalGameBallClientRpc(obj, IsOwnedByServer);
+        
+    }
+
+    [ClientRpc]
+    public void SetLocalGameBallClientRpc(NetworkObjectReference gameBall, bool active)
+    {
+        ((GameObject)localGameBall.Value).SetActive(active);
     }
 
     private void Start()
@@ -62,16 +76,6 @@ public class Player : NetworkBehaviour
             }
 
         }
-    }
-
-    private void LateUpdate()
-    {
-
-    }
-
-    private void FixedUpdate()
-    {
-
     }
 
     #region Catch And Throw stuff
@@ -117,8 +121,8 @@ public class Player : NetworkBehaviour
     {
         ballObject.SetActive(false);
 
-        localGameBall.SetActive(true);
-        HeldBallRigidbody = localGameBall.GetComponent<Rigidbody>();
+        ((GameObject)localGameBall.Value).SetActive(true);
+        HeldBallRigidbody = ((GameObject)localGameBall.Value).GetComponent<Rigidbody>();
         HeldBallRigidbody.isKinematic = true;
         HeldBallRigidbody.useGravity = false;
         HeldBallRigidbody.velocity = Vector3.zero;
@@ -160,8 +164,22 @@ public class Player : NetworkBehaviour
         Collider ballCollider = DetectBall();
         if (ballCollider != null)
         {
+            EnableLocalBallServerRpc(ballCollider.GetComponent<NetworkObject>());
             LaunchBall(ballCollider.GetComponent<Rigidbody>());
         }
+    }
+
+    [ServerRpc]
+    public void EnableLocalBallServerRpc(NetworkObjectReference networkObjectReference)
+    {
+        EnableLocalBallClientRpc(networkObjectReference);
+    }
+
+    [ClientRpc]
+    public void EnableLocalBallClientRpc(NetworkObjectReference networkObjectReference)
+    {
+        ((GameObject)networkObjectReference).SetActive(false);
+        ((GameObject)localGameBall.Value).SetActive(true);
     }
 
     private Collider DetectBall()
