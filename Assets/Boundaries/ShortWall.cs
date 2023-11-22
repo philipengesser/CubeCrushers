@@ -7,6 +7,9 @@ public class ShortWall : MonoBehaviour
 {
     public bool LosePointsOnHit = false;
     public ParticleSystem WallHitSystem;
+    public AudioSource WallSource;
+    public AudioClip WallHitClip;
+    public AudioClip BackWallHitClip;
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -44,7 +47,15 @@ public class ShortWall : MonoBehaviour
             else
             {
                 if (LosePointsOnHit)
+                {
                     GlobalData.s.Score -= 3;
+                    WallSource.PlayOneShot(BackWallHitClip);
+                }
+                else
+                {
+                    WallSource.PlayOneShot(WallHitClip);
+                }
+                    
 
                 // if the ball is not moving down the court fast enough add some speed in the direction down the court
                 Rigidbody ballRigidbody = collision.gameObject.GetComponent<Rigidbody>();

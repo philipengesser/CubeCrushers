@@ -12,6 +12,8 @@ public class Player : NetworkBehaviour
 
     public GameObject LocalGameBallPrefab;
     public NetworkVariable<NetworkObjectReference> localGameBall = new NetworkVariable<NetworkObjectReference>();
+    public AudioSource PlayerSource;
+    public AudioClip PlayerHitClip;
 
     public override void OnNetworkSpawn()
     {
@@ -205,6 +207,7 @@ public class Player : NetworkBehaviour
     }
     private void LaunchBall(Rigidbody ballRigidbody)
     {
+        PlayerSource.PlayOneShot(PlayerHitClip);
         Vector3 launchDir = transform.forward;
 
         // angle the launch up a little

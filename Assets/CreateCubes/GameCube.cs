@@ -6,6 +6,7 @@ using UnityEngine;
 public class GameCube : NetworkBehaviour
 {
     public Renderer MyRenderer;
+    public AudioSource CubeHitSource;
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -26,7 +27,7 @@ public class GameCube : NetworkBehaviour
 
     public IEnumerator DespawnCubeAfterDelay()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(2f);
         GetComponent<NetworkObject>().Despawn();
     }
 
@@ -38,6 +39,7 @@ public class GameCube : NetworkBehaviour
 
     public IEnumerator DestoryCubeVisuals(Vector3 hitPoint)
     {
+        CubeHitSource.Play();
         Material mat = MyRenderer.material;
         mat.SetVector("HitPoint", hitPoint);
         mat.SetFloat("HitSize", GlobalVariables.CubeSize);

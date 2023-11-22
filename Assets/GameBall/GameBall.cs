@@ -15,10 +15,12 @@ public class GameBall : MonoBehaviour
     public float JustCollided = 0;
     public float JustHitByPlayer = 0;
 
-    //private void Awake()
-    //{
-    //    s = this;
-    //}
+    public AudioSource BallSource;
+    public AudioClip BallBounceOffGround;
+    public AudioClip BallBounceOffWall;
+    public AudioClip BallHitCube;
+    public AudioClip BallHitBackWall;
+    public AudioClip BallHitByPlayer;
 
     private void Update()
     {
@@ -46,5 +48,10 @@ public class GameBall : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         JustCollided = .2f;
+
+        if (collision.gameObject.CompareTag("LongWall"))
+            BallSource.PlayOneShot(BallBounceOffWall);
+        else 
+            BallSource.PlayOneShot(BallBounceOffGround);
     }
 }
