@@ -2397,17 +2397,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 167009445, guid: 192adb26eaab02c4fb188a18d7079716, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
+    - target: {fileID: 73784958, guid: 192adb26eaab02c4fb188a18d7079716, type: 3}
+      propertyPath: MaxDistance
+      value: 40
       objectReference: {fileID: 0}
-    - target: {fileID: 167009446, guid: 192adb26eaab02c4fb188a18d7079716, type: 3}
-      propertyPath: GlobalObjectIdHash
-      value: 4080898897
+    - target: {fileID: 73784958, guid: 192adb26eaab02c4fb188a18d7079716, type: 3}
+      propertyPath: rolloffMode
+      value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 8035855090564522832, guid: 192adb26eaab02c4fb188a18d7079716, type: 3}
-      propertyPath: m_TagString
-      value: LongWall
+    - target: {fileID: 1479532671, guid: 192adb26eaab02c4fb188a18d7079716, type: 3}
+      propertyPath: MaxDistance
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 1479532671, guid: 192adb26eaab02c4fb188a18d7079716, type: 3}
+      propertyPath: rolloffMode
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8035855092209837758, guid: 192adb26eaab02c4fb188a18d7079716, type: 3}
       propertyPath: m_RootOrder
@@ -2456,14 +2460,6 @@ PrefabInstance:
     - target: {fileID: 8035855092209837759, guid: 192adb26eaab02c4fb188a18d7079716, type: 3}
       propertyPath: m_Name
       value: SharedSceneSetup
-      objectReference: {fileID: 0}
-    - target: {fileID: 8035855092209837759, guid: 192adb26eaab02c4fb188a18d7079716, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8035855092402743220, guid: 192adb26eaab02c4fb188a18d7079716, type: 3}
-      propertyPath: m_TagString
-      value: LongWall
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 192adb26eaab02c4fb188a18d7079716, type: 3}

@@ -8,12 +8,22 @@ public class GameCube : NetworkBehaviour
     public Renderer MyRenderer;
     public AudioSource CubeHitSource;
 
-    private void OnCollisionEnter(Collision collision)
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if (collision.gameObject.CompareTag("Ball"))
+    //    {
+    //        GlobalData.s.Score += 1;
+    //        DestroyCubeServerRpc(collision.GetContact(0).point);
+    //        //Destroy(this.gameObject);
+    //    }
+    //}
+
+    private void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.CompareTag("Ball"))
+        if (other.gameObject.CompareTag("Ball"))
         {
             GlobalData.s.Score += 1;
-            DestroyCubeServerRpc(collision.GetContact(0).point);
+            DestroyCubeServerRpc(other.transform.position);
             //Destroy(this.gameObject);
         }
     }
