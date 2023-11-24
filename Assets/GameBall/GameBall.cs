@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class GameBall : MonoBehaviour
+public class GameBall : NetworkBehaviour
 {
     public static GameBall s;
 
@@ -15,13 +16,23 @@ public class GameBall : MonoBehaviour
     public float JustCollided = 0;
     public float JustHitByPlayer = 0;
 
-    private void Awake()
+    public AudioSource BallSource;
+    public AudioClip BallBounceOffGround;
+    public AudioClip BallBounceOffWall;
+    public AudioClip BallHitCube;
+    public AudioClip BallHitBackWall;
+    public AudioClip BallHitByPlayer;
+
+    private bool resetingBallPosition;
+
+    public void Awake()
     {
         s = this;
     }
 
     private void Update()
     {
+        print("Position : " + transform.position);
         transform.localScale = new Vector3(1,1,1) * GlobalVariables.BallSize;
 
         if (JustHitByPlayer > 0)
@@ -46,5 +57,44 @@ public class GameBall : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         JustCollided = .2f;
+
+        if (collision.gameObject.CompareTag("LongWall"))
+            BallSource.PlayOneShot(BallBounceOffWall);
+        else 
+            BallSource.PlayOneShot(BallBounceOffGround);
+    }
+
+    public void ResetBallPositionStart(Vector3 ballPosition, Vector3 ballVelocity)
+    {
+        resetingBallPosition = true;
+        ResetBallPositionServerRpc(ballPosition, ballVelocity);
+        ResetBallPosition(ballPosition, ballVelocity);
+    }
+
+    [ServerRpc(RequireOwnership =false)]
+    private void ResetBallPositionServerRpc(Vector3 ballPosition, Vector3 ballVelocity)
+    {
+        //print("ServerRpc called");
+        ResetBallPositionClientRpc(ballPosition, ballVelocity);
+    }
+
+    [ClientRpc]
+    private void ResetBallPositionClientRpc(Vector3 ballPosition, Vector3 ballVelocity)
+    {
+        // If this is the client that actually sent this message then don't apply the ball physics again
+        if (resetingBallPosition == true)
+        {
+            resetingBallPosition = false;
+            return; 
+        }
+        ResetBallPosition(ballPosition, ballVelocity);
+    }
+
+    private void ResetBallPosition(Vector3 ballPosition, Vector3 ballVelocity)
+    {
+        GameBall.s.transform.localPosition = ballPosition;
+        GameBall.s.MyRigidbody.velocity = ballVelocity;
+        BallSource.PlayOneShot(BallHitBackWall);
+        GlobalData.s.Score -= 2;
     }
 }

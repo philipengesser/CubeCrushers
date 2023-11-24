@@ -6,13 +6,26 @@ using UnityEngine;
 public class GameCube : NetworkBehaviour
 {
     public Renderer MyRenderer;
+    public AudioSource CubeHitSource;
+    public bool DestroyVisualsRan;
 
-    private void OnCollisionEnter(Collision collision)
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if (collision.gameObject.CompareTag("Ball"))
+    //    {
+    //        GlobalData.s.Score += 1;
+    //        DestroyCubeServerRpc(collision.GetContact(0).point);
+    //        //Destroy(this.gameObject);
+    //    }
+    //}
+
+    private void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.CompareTag("Ball"))
+        if (other.gameObject.CompareTag("Ball"))
         {
             GlobalData.s.Score += 1;
-            DestroyCubeServerRpc(collision.GetContact(0).point);
+            DestroyCubeServerRpc(other.transform.position);
+            StartCoroutine(DestoryCubeVisuals(other.transform.position));
             //Destroy(this.gameObject);
         }
     }
@@ -26,18 +39,23 @@ public class GameCube : NetworkBehaviour
 
     public IEnumerator DespawnCubeAfterDelay()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(2f);
         GetComponent<NetworkObject>().Despawn();
     }
 
     [ClientRpc]
     public void DestroyCubeClientRpc(Vector3 collisionPoint)
     {
+        if (DestroyVisualsRan)
+            return; 
+
         StartCoroutine(DestoryCubeVisuals(collisionPoint));
     }
 
     public IEnumerator DestoryCubeVisuals(Vector3 hitPoint)
     {
+        DestroyVisualsRan = true;
+        CubeHitSource.Play();
         Material mat = MyRenderer.material;
         mat.SetVector("HitPoint", hitPoint);
         mat.SetFloat("HitSize", GlobalVariables.CubeSize);

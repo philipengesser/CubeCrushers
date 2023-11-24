@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -7,6 +8,11 @@ public class ShortWall : MonoBehaviour
 {
     public bool LosePointsOnHit = false;
     public ParticleSystem WallHitSystem;
+    public AudioSource WallSource;
+    public AudioClip WallHitClip;
+    public AudioClip BackWallHitClip;
+    public Transform BallSpawnPosition;
+    public Vector3 BallResetLocalPosition;
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -32,19 +38,32 @@ public class ShortWall : MonoBehaviour
             //main.startRotationZ = transform.rotation.eulerAngles.z;
             WallHitSystem.Emit(3);
 
-
             if (NetworkManager.Singleton != null &&
-                NetworkManager.Singleton.ConnectedClients.Count > 1)
+                (NetworkManager.Singleton.IsServer == false || 
+                NetworkManager.Singleton.ConnectedClients.Count > 1))
             {
-                GlobalData.s.Score -= 2;
-                collision.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-                collision.gameObject.transform.position = transform.position +
-                    (transform.up * 4);
+                Player closerPlayer = PlayerManager.s.Players.OrderBy(p =>
+                    Vector3.Distance(p.transform.position, GameBall.s.transform.position))
+                    .FirstOrDefault();
+                // This makes it so that only the player closest to the ball can control it
+                if (closerPlayer == null || closerPlayer.IsOwner == false)
+                    return;
+
+                Vector3 ballPosition = BallResetLocalPosition;
+                GameBall.s.ResetBallPositionStart(ballPosition, Vector3.zero);
             }
             else
             {
                 if (LosePointsOnHit)
+                {
                     GlobalData.s.Score -= 3;
+                    WallSource.PlayOneShot(BackWallHitClip);
+                }
+                else
+                {
+                    WallSource.PlayOneShot(WallHitClip);
+                }
+                    
 
                 // if the ball is not moving down the court fast enough add some speed in the direction down the court
                 Rigidbody ballRigidbody = collision.gameObject.GetComponent<Rigidbody>();

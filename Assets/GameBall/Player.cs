@@ -10,21 +10,65 @@ public class Player : NetworkBehaviour
     [SerializeField]
     public LayerMask BallMask;
 
+    public GameObject GameBallPrefab;
+    //public NetworkVariable<NetworkObjectReference> localGameBall = new NetworkVariable<NetworkObjectReference>();
+    public AudioSource PlayerSource;
+    public AudioClip PlayerHitClip;
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        if (IsServer == false || IsOwner == false)
+            return;
+
+        var obj = Instantiate(GameBallPrefab);
+        obj.GetComponent<NetworkObject>().Spawn(true);
+
+
+        //SpawnLocalGameBallServerRpc();
+    }
+
+    //[ServerRpc(RequireOwnership = false)]
+    //public void SpawnLocalGameBallServerRpc(ServerRpcParams serverRpcParams = default)
+    //{
+    //    var clientId = serverRpcParams.Receive.SenderClientId;
+    //    var obj = Instantiate(LocalGameBallPrefab);
+
+    //    obj.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+    //    localGameBall.Value = obj;
+    //    StartCoroutine(DelaySetLocalGameBall(obj));
+    //}
+
+    //IEnumerator DelaySetLocalGameBall(GameObject obj)
+    //{
+    //    yield return new WaitForSeconds(3);
+    //    // Disable the ball if the player is not the server so that we only start with 1 ball
+    //    SetLocalGameBallClientRpc(obj, IsOwnedByServer);
+
+    //}
+
+    //[ClientRpc]
+    //public void SetLocalGameBallClientRpc(NetworkObjectReference gameBall, bool active)
+    //{
+    //    ((GameObject)localGameBall.Value).SetActive(active);
+    //}
+
     private void Start()
     {
         print("Player Created!");
+        PlayerManager.s.Players.Add(this);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (HeldBall != null)
-        {
-            HeldBall.transform.position = PlayerHand.transform.position;
-        }
-
         if (IsOwner == false)
             return;
+
+        if (HeldBallRigidbody != null)
+        {
+            HeldBallRigidbody.transform.position = PlayerHand.transform.position;
+        }
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -43,11 +87,11 @@ public class Player : NetworkBehaviour
     #region Catch And Throw stuff
 
     public Transform PlayerHand;
-    public Collider HeldBall;
+    public Rigidbody HeldBallRigidbody;
 
     private void CatchAndThrow()
     {
-        if (HeldBall == null)
+        if (HeldBallRigidbody == null)
         {
             GrabBallLocal();
         }
@@ -63,28 +107,31 @@ public class Player : NetworkBehaviour
         if (ballCollider == null)
             return;
 
-        GrabBall();
-        GrabBallServerRpc();
+        GrabBall(ballCollider.gameObject);
+        GrabBallServerRpc(ballCollider.gameObject);
     }
 
     [ServerRpc]
-    private void GrabBallServerRpc()
+    private void GrabBallServerRpc(NetworkObjectReference gameBall)
     {
-        GrabBallClientRpc();
+        GrabBallClientRpc(gameBall);
     }
 
     [ClientRpc]
-    private void GrabBallClientRpc()
+    private void GrabBallClientRpc(NetworkObjectReference gameBall)
     {
-        GrabBall();
+        GrabBall(gameBall);
     }
 
-    private void GrabBall()
+    private void GrabBall(GameObject ballObject)
     {
-        HeldBall = GameBall.s.GetComponent<Collider>();
-        HeldBall.attachedRigidbody.isKinematic = true;
-        HeldBall.attachedRigidbody.useGravity = false;
-        HeldBall.attachedRigidbody.velocity = Vector3.zero;
+        //ballObject.SetActive(false);
+
+        //((GameObject)localGameBall.Value).SetActive(true);
+        //HeldBallRigidbody = ((GameObject)localGameBall.Value).GetComponent<Rigidbody>();
+        HeldBallRigidbody.isKinematic = true;
+        HeldBallRigidbody.useGravity = false;
+        HeldBallRigidbody.velocity = Vector3.zero;
     }
 
     private void ThrowBallLocal()
@@ -106,14 +153,14 @@ public class Player : NetworkBehaviour
     }
     private void ThrowBall()
     {
-        if (HeldBall == null)
+        if (HeldBallRigidbody == null)
             return;
 
-        HeldBall.transform.parent = null;
-        HeldBall.attachedRigidbody.useGravity = true;
-        HeldBall.attachedRigidbody.isKinematic = false;
-        LaunchBall(HeldBall);
-        HeldBall = null;
+        HeldBallRigidbody.transform.parent = null;
+        HeldBallRigidbody.useGravity = true;
+        HeldBallRigidbody.isKinematic = false;
+        LaunchBall();
+        HeldBallRigidbody = null;
     }
 
     #endregion
@@ -123,9 +170,11 @@ public class Player : NetworkBehaviour
         Collider ballCollider = DetectBall();
         if (ballCollider != null)
         {
-            LaunchBall(ballCollider);
+            LaunchBall();
         }
     }
+
+
 
     private Collider DetectBall()
     {
@@ -148,16 +197,67 @@ public class Player : NetworkBehaviour
 
         return ballColliderToReturn;
     }
-    private void LaunchBall(Collider ballCollider)
+    
+
+    
+    private void LaunchBall()
     {
+        
         Vector3 launchDir = transform.forward;
 
         // angle the launch up a little
         launchDir += Vector3.up * GlobalVariables.upwardAngle;
         launchDir = launchDir.normalized;
 
+        Vector3 ballPosition = GameBall.s.transform.localPosition;
+        Vector3 ballVelocity = launchDir * GlobalVariables.launchForce;
+        // transform the ball velocity to be relative to the SharedAROrigin
+        ballVelocity = GameBall.s.transform.parent.InverseTransformVector(ballVelocity);
 
-        ballCollider.attachedRigidbody.velocity = launchDir * GlobalVariables.launchForce;
-        ballCollider.GetComponent<GameBall>().JustHitByPlayer = .2f;
+        ApplyBallPhysics(ballPosition, ballVelocity);
+        ApplyBallPhysicsServerRpc(ballPosition, ballVelocity, OwnerClientId);
     }
+
+    [ServerRpc]
+    private void ApplyBallPhysicsServerRpc(Vector3 ballPosition, Vector3 ballVelocity, ulong originatingClientID)
+    {
+        print("ServerRpc called");
+        ApplyBallPhysicsClientRpc(ballPosition, ballVelocity, originatingClientID);
+    }
+
+    [ClientRpc]
+    private void ApplyBallPhysicsClientRpc(Vector3 ballPosition, Vector3 ballVelocity, ulong originatingClientID)
+    {
+        print("id : " + originatingClientID);
+        // If this is the client that actually sent this message then don't apply the ball physics again
+        if (IsOwner)
+            return;
+        print("ClientRpc called");
+        ApplyBallPhysics(ballPosition, ballVelocity);
+    }
+
+    private void ApplyBallPhysics(Vector3 ballPosition, Vector3 ballVelocity)
+    {
+        print("ApplyBallPhysicsCalled");
+        GameBall.s.transform.localPosition = ballPosition;
+        if (IsOwner)
+            ballVelocity *= GlobalVariables.localLaunchForceMultiplier;
+        ballVelocity = GameBall.s.transform.parent.TransformVector(ballVelocity);
+        GameBall.s.MyRigidbody.velocity = ballVelocity;
+        GameBall.s.JustHitByPlayer = .2f;
+        PlayerSource.PlayOneShot(PlayerHitClip);
+    }
+
+    //[ServerRpc]
+    //public void EnableLocalBallServerRpc(NetworkObjectReference networkObjectReference)
+    //{
+    //    EnableLocalBallClientRpc(networkObjectReference);
+    //}
+
+    //[ClientRpc]
+    //public void EnableLocalBallClientRpc(NetworkObjectReference networkObjectReference)
+    //{
+    //    ((GameObject)networkObjectReference).SetActive(false);
+    //    ((GameObject)localGameBall.Value).SetActive(true);
+    //}
 }
