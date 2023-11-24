@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -10,6 +11,8 @@ public class ShortWall : MonoBehaviour
     public AudioSource WallSource;
     public AudioClip WallHitClip;
     public AudioClip BackWallHitClip;
+    public Transform BallSpawnPosition;
+    public Vector3 BallResetLocalPosition;
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -39,7 +42,14 @@ public class ShortWall : MonoBehaviour
                 (NetworkManager.Singleton.IsServer == false || 
                 NetworkManager.Singleton.ConnectedClients.Count > 1))
             {
-                Vector3 ballPosition = transform.position + (transform.up * 4);
+                Player closerPlayer = PlayerManager.s.Players.OrderBy(p =>
+                    Vector3.Distance(p.transform.position, GameBall.s.transform.position))
+                    .FirstOrDefault();
+                // This makes it so that only the player closest to the ball can control it
+                if (closerPlayer == null || closerPlayer.IsOwner == false)
+                    return;
+
+                Vector3 ballPosition = BallResetLocalPosition;
                 GameBall.s.ResetBallPositionStart(ballPosition, Vector3.zero);
             }
             else

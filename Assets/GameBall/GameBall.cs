@@ -32,6 +32,7 @@ public class GameBall : NetworkBehaviour
 
     private void Update()
     {
+        print("Position : " + transform.position);
         transform.localScale = new Vector3(1,1,1) * GlobalVariables.BallSize;
 
         if (JustHitByPlayer > 0)
@@ -91,7 +92,7 @@ public class GameBall : NetworkBehaviour
 
     private void ResetBallPosition(Vector3 ballPosition, Vector3 ballVelocity)
     {
-        GameBall.s.transform.position = ballPosition;
+        GameBall.s.transform.localPosition = ballPosition;
         GameBall.s.MyRigidbody.velocity = ballVelocity;
         BallSource.PlayOneShot(BallHitBackWall);
         GlobalData.s.Score -= 2;

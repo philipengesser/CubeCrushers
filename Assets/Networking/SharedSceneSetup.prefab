@@ -46,6 +46,68 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AttackWallPrefab: {fileID: 6762973182898574909, guid: 96cb59aae8dc6094990fa620fb4d4eae, type: 3}
   timeToSpawn: 0
+--- !u!1 &1263559863
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1263559864}
+  m_Layer: 0
+  m_Name: BallSpawnPosition (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1263559864
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1263559863}
+  m_LocalRotation: {x: -0, y: -1, z: -0, w: 0}
+  m_LocalPosition: {x: 0, y: -4, z: 9}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8035855091090172160}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1620510224
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1620510225}
+  m_Layer: 0
+  m_Name: BallSpawnPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1620510225
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1620510224}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -4, z: 9}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8035855091518784748}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2778137314420046331
 GameObject:
   m_ObjectHideFlags: 0
@@ -5241,6 +5303,7 @@ Transform:
   m_Children:
   - {fileID: 8035855091178430498}
   - {fileID: 8035855091323834981}
+  - {fileID: 1263559864}
   m_Father: {fileID: 8035855090458788335}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
@@ -5527,6 +5590,8 @@ MonoBehaviour:
   WallSource: {fileID: 73784958}
   WallHitClip: {fileID: 8300000, guid: 15b9ecf66de49c54983b851a95d58074, type: 3}
   BackWallHitClip: {fileID: 8300000, guid: b7f139aead9b8a64883a753ce961bdfe, type: 3}
+  BallSpawnPosition: {fileID: 1263559864}
+  BallResetLocalPosition: {x: 0, y: 10, z: -8}
 --- !u!82 &73784958
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5653,6 +5718,7 @@ Transform:
   m_Children:
   - {fileID: 8035855091144317270}
   - {fileID: 8035855092377241734}
+  - {fileID: 1620510225}
   m_Father: {fileID: 8035855090458788335}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6080,6 +6146,8 @@ MonoBehaviour:
   WallSource: {fileID: 1479532671}
   WallHitClip: {fileID: 8300000, guid: 15b9ecf66de49c54983b851a95d58074, type: 3}
   BackWallHitClip: {fileID: 8300000, guid: b7f139aead9b8a64883a753ce961bdfe, type: 3}
+  BallSpawnPosition: {fileID: 1620510225}
+  BallResetLocalPosition: {x: 0, y: 10, z: 8}
 --- !u!82 &1479532671
 AudioSource:
   m_ObjectHideFlags: 0

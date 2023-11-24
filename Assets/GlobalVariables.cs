@@ -20,6 +20,7 @@ public class GlobalVariables : MonoBehaviour
     public static bool CreateCubes;
     public static float sphereCastRadius = 2;
     public static float sphereCastDistance = 0;
-    public static float launchForce = 10;
+    public static float launchForce = 8;
+    public static float localLaunchForceMultiplier = .6f;
     public static float upwardAngle = 0;
 }

@@ -311,7 +311,7 @@ MonoBehaviour:
   BallMask:
     serializedVersion: 2
     m_Bits: 64
-  LocalGameBallPrefab: {fileID: 2150802432815746769, guid: 7bdbda1d297fd504e974d672c110bf0b, type: 3}
+  GameBallPrefab: {fileID: 2150802432815746769, guid: 7bdbda1d297fd504e974d672c110bf0b, type: 3}
   PlayerSource: {fileID: 6540888642049393416}
   PlayerHitClip: {fileID: 8300000, guid: a2024f8a10e394e43b0b95323fd9e45d, type: 3}
   PlayerHand: {fileID: 1732840054}

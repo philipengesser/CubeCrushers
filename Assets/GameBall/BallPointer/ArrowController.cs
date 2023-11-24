@@ -5,19 +5,19 @@ using UnityEngine.UI;
 
 public class ArrowController : MonoBehaviour
 {
-    public Transform targetObject;
+    //public Transform targetObject;
     public Camera mainCamera;
     public Image arrowImage; // Reference to the Image component
 
     void Update()
     {
-        if (targetObject == null || mainCamera == null)
+        if (GameBall.s == null || mainCamera == null)
         {
             // Ensure that the target object and main camera are assigned.
             return;
         }
 
-        Vector3 screenPos = mainCamera.WorldToScreenPoint(targetObject.position);
+        Vector3 screenPos = mainCamera.WorldToScreenPoint(GameBall.s.transform.position);
 
         if (screenPos.z > 0 && screenPos.x > 0 && screenPos.x < Screen.width && screenPos.y > 0 && screenPos.y < Screen.height)
         {

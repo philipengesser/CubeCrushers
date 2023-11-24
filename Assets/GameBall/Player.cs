@@ -10,7 +10,7 @@ public class Player : NetworkBehaviour
     [SerializeField]
     public LayerMask BallMask;
 
-    //public GameObject LocalGameBallPrefab;
+    public GameObject GameBallPrefab;
     //public NetworkVariable<NetworkObjectReference> localGameBall = new NetworkVariable<NetworkObjectReference>();
     public AudioSource PlayerSource;
     public AudioClip PlayerHitClip;
@@ -18,10 +18,13 @@ public class Player : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        if (IsOwner == false)
+        if (IsServer == false || IsOwner == false)
             return;
 
-        
+        var obj = Instantiate(GameBallPrefab);
+        obj.GetComponent<NetworkObject>().Spawn(true);
+
+
         //SpawnLocalGameBallServerRpc();
     }
 
@@ -41,7 +44,7 @@ public class Player : NetworkBehaviour
     //    yield return new WaitForSeconds(3);
     //    // Disable the ball if the player is not the server so that we only start with 1 ball
     //    SetLocalGameBallClientRpc(obj, IsOwnedByServer);
-        
+
     //}
 
     //[ClientRpc]
@@ -53,6 +56,7 @@ public class Player : NetworkBehaviour
     private void Start()
     {
         print("Player Created!");
+        PlayerManager.s.Players.Add(this);
     }
 
     // Update is called once per frame
@@ -205,8 +209,10 @@ public class Player : NetworkBehaviour
         launchDir += Vector3.up * GlobalVariables.upwardAngle;
         launchDir = launchDir.normalized;
 
-        Vector3 ballPosition = GameBall.s.transform.position;
+        Vector3 ballPosition = GameBall.s.transform.localPosition;
         Vector3 ballVelocity = launchDir * GlobalVariables.launchForce;
+        // transform the ball velocity to be relative to the SharedAROrigin
+        ballVelocity = GameBall.s.transform.parent.InverseTransformVector(ballVelocity);
 
         ApplyBallPhysics(ballPosition, ballVelocity);
         ApplyBallPhysicsServerRpc(ballPosition, ballVelocity, OwnerClientId);
@@ -233,7 +239,10 @@ public class Player : NetworkBehaviour
     private void ApplyBallPhysics(Vector3 ballPosition, Vector3 ballVelocity)
     {
         print("ApplyBallPhysicsCalled");
-        GameBall.s.transform.position = ballPosition;
+        GameBall.s.transform.localPosition = ballPosition;
+        if (IsOwner)
+            ballVelocity *= GlobalVariables.localLaunchForceMultiplier;
+        ballVelocity = GameBall.s.transform.parent.TransformVector(ballVelocity);
         GameBall.s.MyRigidbody.velocity = ballVelocity;
         GameBall.s.JustHitByPlayer = .2f;
         PlayerSource.PlayOneShot(PlayerHitClip);
