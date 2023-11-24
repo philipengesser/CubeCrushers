@@ -7,6 +7,7 @@ public class GameCube : NetworkBehaviour
 {
     public Renderer MyRenderer;
     public AudioSource CubeHitSource;
+    public bool DestroyVisualsRan;
 
     //private void OnCollisionEnter(Collision collision)
     //{
@@ -24,6 +25,7 @@ public class GameCube : NetworkBehaviour
         {
             GlobalData.s.Score += 1;
             DestroyCubeServerRpc(other.transform.position);
+            StartCoroutine(DestoryCubeVisuals(other.transform.position));
             //Destroy(this.gameObject);
         }
     }
@@ -44,11 +46,15 @@ public class GameCube : NetworkBehaviour
     [ClientRpc]
     public void DestroyCubeClientRpc(Vector3 collisionPoint)
     {
+        if (DestroyVisualsRan)
+            return; 
+
         StartCoroutine(DestoryCubeVisuals(collisionPoint));
     }
 
     public IEnumerator DestoryCubeVisuals(Vector3 hitPoint)
     {
+        DestroyVisualsRan = true;
         CubeHitSource.Play();
         Material mat = MyRenderer.material;
         mat.SetVector("HitPoint", hitPoint);

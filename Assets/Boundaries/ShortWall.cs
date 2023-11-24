@@ -39,11 +39,8 @@ public class ShortWall : MonoBehaviour
                 (NetworkManager.Singleton.IsServer == false || 
                 NetworkManager.Singleton.ConnectedClients.Count > 1))
             {
-                WallSource.PlayOneShot(BackWallHitClip);
-                GlobalData.s.Score -= 2;
-                collision.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-                collision.gameObject.transform.position = transform.position +
-                    (transform.up * 4);
+                Vector3 ballPosition = transform.position + (transform.up * 4);
+                GameBall.s.ResetBallPositionStart(ballPosition, Vector3.zero);
             }
             else
             {
