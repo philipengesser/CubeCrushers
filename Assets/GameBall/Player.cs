@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class Player : NetworkBehaviour
 {
+    public static Player LocalPlayer;
+
     public Transform playerTransform;
 
     [SerializeField]
@@ -15,9 +17,17 @@ public class Player : NetworkBehaviour
     public AudioSource PlayerSource;
     public AudioClip PlayerHitClip;
 
+    public float SwingDuration;
+    private float swingTimeLeft;
+    public Renderer PlayerCapsule;
+
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
+
+        if (IsOwner == true)
+            LocalPlayer = this;
+
         if (IsServer == false || IsOwner == false)
             return;
 
@@ -62,6 +72,11 @@ public class Player : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GlobalVariables.ShowPlayerCapsule == false)
+            PlayerCapsule.enabled = false;
+        else
+            PlayerCapsule.enabled = true;
+
         if (IsOwner == false)
             return;
 
@@ -70,7 +85,14 @@ public class Player : NetworkBehaviour
             HeldBallRigidbody.transform.position = PlayerHand.transform.position;
         }
 
+        swingTimeLeft -= Time.deltaTime;
+
         if (Input.GetMouseButtonDown(0))
+        {
+            swingTimeLeft = SwingDuration;
+        }
+
+        if (swingTimeLeft > 0)
         {
             if (GlobalVariables.CatchMode == true)
             {
@@ -80,8 +102,8 @@ public class Player : NetworkBehaviour
             {
                 TryToHitBall();
             }
-
         }
+        
     }
 
     #region Catch And Throw stuff
@@ -202,7 +224,7 @@ public class Player : NetworkBehaviour
     
     private void LaunchBall()
     {
-        
+        swingTimeLeft = 0;
         Vector3 launchDir = transform.forward;
 
         // angle the launch up a little
@@ -240,11 +262,12 @@ public class Player : NetworkBehaviour
     {
         print("ApplyBallPhysicsCalled");
         GameBall.s.transform.localPosition = ballPosition;
-        if (IsOwner)
+        if (IsOwner && 
+            (IsServer == false || NetworkManager.Singleton.ConnectedClientsIds.Count > 1))
             ballVelocity *= GlobalVariables.localLaunchForceMultiplier;
         ballVelocity = GameBall.s.transform.parent.TransformVector(ballVelocity);
         GameBall.s.MyRigidbody.velocity = ballVelocity;
-        GameBall.s.JustHitByPlayer = .2f;
+        GameBall.s.JustHitByPlayer = .4f;
         PlayerSource.PlayOneShot(PlayerHitClip);
     }
 

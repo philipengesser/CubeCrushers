@@ -187,7 +187,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 4087899190478289827}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.5
   m_Height: 2
   m_Direction: 1
@@ -314,6 +314,8 @@ MonoBehaviour:
   GameBallPrefab: {fileID: 2150802432815746769, guid: 7bdbda1d297fd504e974d672c110bf0b, type: 3}
   PlayerSource: {fileID: 6540888642049393416}
   PlayerHitClip: {fileID: 8300000, guid: a2024f8a10e394e43b0b95323fd9e45d, type: 3}
+  SwingDuration: 0.2
+  PlayerCapsule: {fileID: 8953104358299146220}
   PlayerHand: {fileID: 1732840054}
   HeldBallRigidbody: {fileID: 0}
 --- !u!114 &3266394943035833657

@@ -10,7 +10,7 @@ public class Ball : MonoBehaviour
         print(collision.gameObject.tag);
         if (collision.gameObject.tag == "GameCube")
         {
-            GlobalData.s.Score += 1;
+            GlobalData.s.LastScore += 1;
             Destroy(this.gameObject);
         }
     }

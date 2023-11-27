@@ -13,6 +13,29 @@ public class ShortWall : MonoBehaviour
     public AudioClip BackWallHitClip;
     public Transform BallSpawnPosition;
     public Vector3 BallResetLocalPosition;
+    public Renderer VisualRenderer;
+    public Transform MyTransform;
+
+    private void Start()
+    {
+        MyTransform = transform;
+    }
+
+    private void Update()
+    {
+        if (Player.LocalPlayer == null)
+            return;
+
+        if (GlobalVariables.ShowOppositeShortWall == false && 
+            (NetworkManager.Singleton.IsServer == false ||
+            NetworkManager.Singleton.ConnectedClientsIds.Count > 1))
+        {
+            if (Vector3.Distance(MyTransform.position, Player.LocalPlayer.transform.position) > 10)
+                VisualRenderer.enabled = false;
+            else
+                VisualRenderer.enabled = true;
+        }
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -50,13 +73,15 @@ public class ShortWall : MonoBehaviour
                     return;
 
                 Vector3 ballPosition = BallResetLocalPosition;
+                ScoreManager.s.DecreaseScoreServerRpc(2);
                 GameBall.s.ResetBallPositionStart(ballPosition, Vector3.zero);
             }
             else
             {
                 if (LosePointsOnHit)
                 {
-                    GlobalData.s.Score -= 3;
+                    //GlobalData.s.LastScore -= 3;
+                    ScoreManager.s.DecreaseScoreServerRpc(3);
                     WallSource.PlayOneShot(BackWallHitClip);
                 }
                 else

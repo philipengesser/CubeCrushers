@@ -50,7 +50,7 @@ public class GameBall : NetworkBehaviour
             MyRenderer.material = NormalMat;
         }
 
-        if (MyRigidbody.velocity.y > 5)
+        if (MyRigidbody.velocity.y > 7)
             MyRigidbody.velocity = new Vector3(MyRigidbody.velocity.x, 5, MyRigidbody.velocity.z);
     }
 
@@ -95,6 +95,5 @@ public class GameBall : NetworkBehaviour
         GameBall.s.transform.localPosition = ballPosition;
         GameBall.s.MyRigidbody.velocity = ballVelocity;
         BallSource.PlayOneShot(BallHitBackWall);
-        GlobalData.s.Score -= 2;
     }
 }
