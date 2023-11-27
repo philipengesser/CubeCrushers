@@ -20,7 +20,7 @@ public class GlobalData : MonoBehaviour
         
     }
 
-    public int Score;
+    public int LastScore;
     public int HighScore;
     public string CurrentRoomName;
     public bool IsHost;

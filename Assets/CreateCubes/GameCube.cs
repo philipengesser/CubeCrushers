@@ -23,7 +23,8 @@ public class GameCube : NetworkBehaviour
     {
         if (other.gameObject.CompareTag("Ball"))
         {
-            GlobalData.s.Score += 1;
+            //GlobalData.s.LastScore += 1;
+            ScoreManager.s.IncreaseScoreServerRpc(1);
             DestroyCubeServerRpc(other.transform.position);
             StartCoroutine(DestoryCubeVisuals(other.transform.position));
             //Destroy(this.gameObject);

@@ -13,6 +13,6 @@ public class Score : MonoBehaviour
 
     private void Update()
     {
-        Text.text = GlobalData.s.Score.ToString();
+        Text.text = ScoreManager.s.Score.Value.ToString();
     }
 }

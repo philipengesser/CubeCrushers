@@ -14,9 +14,9 @@ public class MainMenuManager : MonoBehaviour
 
     void updateHighScore()
     {
-        if (GlobalData.s.HighScore < GlobalData.s.Score)
+        if (GlobalData.s.HighScore < GlobalData.s.LastScore)
         {
-            GlobalData.s.HighScore = GlobalData.s.Score;
+            GlobalData.s.HighScore = GlobalData.s.LastScore;
         }
     }
 
