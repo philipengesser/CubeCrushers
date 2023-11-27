@@ -46,9 +46,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa9d255cf7e1fc74fa19e9da982ce464, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CubePrefab: {fileID: 4779502882595184167, guid: fa727134f48cc15449d52183f7b48569, type: 3}
+  CubePrefab: {fileID: 3442557506512617154, guid: 214a79012800a3c4c854a09e3efc4659, type: 3}
   CurrentCube: {fileID: 0}
-  SpawnMaxX: 4
+  SpawnMaxX: 3
   SpawnMaxZ: 2
 --- !u!114 &4938436985079771708
 MonoBehaviour:

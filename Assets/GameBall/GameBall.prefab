@@ -277,6 +277,9 @@ MonoBehaviour:
   BallHitCube: {fileID: 0}
   BallHitBackWall: {fileID: 0}
   BallHitByPlayer: {fileID: 0}
+  ballSpeedUpTimeLeft: 0
+  MinSpeedWhenSpedUp: 15
+  MaxSpeedWhenSlowedDown: 4
 --- !u!114 &369375846
 MonoBehaviour:
   m_ObjectHideFlags: 0
