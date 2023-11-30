@@ -18,9 +18,9 @@ public class EndpointStartManager : MonoBehaviour
 
     public void OnServerStarted()
     {
-        var obj = Instantiate(
-            CubeSpawnerPrefab, SharedSpaceManager.SharedArOriginObject.transform, false);
+        //var obj = Instantiate(
+        //    CubeSpawnerPrefab, SharedSpaceManager.SharedArOriginObject.transform, false);
 
-        obj.GetComponent<NetworkObject>().Spawn(true);
+        //obj.GetComponent<NetworkObject>().Spawn(true);
     }
 }

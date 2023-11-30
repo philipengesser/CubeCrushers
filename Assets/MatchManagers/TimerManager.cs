@@ -17,7 +17,7 @@ public class TimerManager : NetworkBehaviour
 
     private void Update()
     {
-        if (IsServer == false)
+        if (IsServer == false || StartManager.s.GameStarted == false)
             return;
 
         TimeLeft.Value -= Time.deltaTime;
@@ -45,5 +45,11 @@ public class TimerManager : NetworkBehaviour
         GlobalData.s.LastScore = ScoreManager.s.Score.Value;
         NetworkManager.Shutdown();
         SceneManager.LoadScene("MainMenu");
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void DecreaseTimeServerRpc(int amountToDecrease)
+    {
+        TimeLeft.Value -= amountToDecrease;
     }
 }

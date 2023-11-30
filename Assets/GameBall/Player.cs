@@ -31,8 +31,8 @@ public class Player : NetworkBehaviour
         if (IsServer == false || IsOwner == false)
             return;
 
-        var obj = Instantiate(GameBallPrefab);
-        obj.GetComponent<NetworkObject>().Spawn(true);
+        //var obj = Instantiate(GameBallPrefab);
+        //obj.GetComponent<NetworkObject>().Spawn(true);
 
 
         //SpawnLocalGameBallServerRpc();
