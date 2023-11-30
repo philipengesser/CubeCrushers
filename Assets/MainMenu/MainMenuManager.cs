@@ -10,6 +10,8 @@ public class MainMenuManager : MonoBehaviour
     {
         updateHighScore();
         cleanupNetworkManager();
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     void updateHighScore()

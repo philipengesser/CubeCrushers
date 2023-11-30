@@ -5,10 +5,12 @@ using UnityEngine;
 
 public class CubeSpawner : NetworkBehaviour
 {
-    public GameObject CubePrefab;
+    //public GameObject CubePrefab;
     public GameObject CurrentCube;
     public float SpawnMaxX;
     public float SpawnMaxZ;
+
+    public List<GameObject> CubePrefabs;
 
     // Update is called once per frame
     void Update()
@@ -31,9 +33,28 @@ public class CubeSpawner : NetworkBehaviour
             (transform.right * spawnX) +
             (transform.forward * spawnZ);
         spawnPos.y = GlobalVariables.CubeHeight;
+
+        var cubePrefab = GetCubeToSpawn();
+        if (cubePrefab == null)
+            return;
+
         CurrentCube = 
-            Instantiate(CubePrefab, spawnPos, Quaternion.identity);
+            Instantiate(cubePrefab, spawnPos, Quaternion.identity);
         CurrentCube.transform.localScale = new Vector3(1, 1, 1) * GlobalVariables.CubeSize;
         CurrentCube.GetComponent<NetworkObject>().Spawn(true);
+    }
+
+    public GameObject GetCubeToSpawn()
+    {
+        if (LevelManager.s.MoreCubes())
+        {
+            CubeType nextCubeType = LevelManager.s.GetNextCube();
+            return CubePrefabs[(int)nextCubeType];
+        }
+        else
+        {
+            LevelManager.s.WinLevel();
+            return null;
+        }
     }
 }

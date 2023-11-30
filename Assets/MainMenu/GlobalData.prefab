@@ -44,6 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0acf3aa589b4012429509b33e1928dcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Score: 0
+  LastScore: 0
   HighScore: 0
   CurrentRoomName: 
+  IsHost: 0
+  CurrentLevelIndex: 1
