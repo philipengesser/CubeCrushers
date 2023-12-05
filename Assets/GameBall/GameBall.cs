@@ -66,6 +66,11 @@ public class GameBall : NetworkBehaviour
 
     }
 
+    public override void OnNetworkSpawn()
+    {
+        MyRigidbody.velocity = transform.forward * -2;
+    }
+
     private void ModifyBallVelocity()
     {
         if (AllowAnyYVelocity > 0)

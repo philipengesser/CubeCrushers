@@ -48,6 +48,10 @@ public class LevelManager : MonoBehaviour
         else if (TimerManager.s.TimeLeft.Value > TwoStarTimeThreshold)
             stars = 2;
 
+        GlobalData.s.WonMatch = true;
+        GlobalData.s.StarsEarned = stars;
+        GlobalData.s.TimeLeft = TimerManager.s.TimeLeft.Value;
+
         if (GlobalData.s.LevelsCleared.ContainsKey(GlobalData.s.CurrentLevelIndex))
         {
             if (GlobalData.s.LevelsCleared[GlobalData.s.CurrentLevelIndex] < stars)
@@ -58,6 +62,6 @@ public class LevelManager : MonoBehaviour
             GlobalData.s.LevelsCleared.Add(GlobalData.s.CurrentLevelIndex, stars);
         }
 
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene("AfterMatchScene");
     }
 }

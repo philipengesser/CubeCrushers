@@ -44,7 +44,11 @@ public class TimerManager : NetworkBehaviour
         yield return new WaitForSeconds(delay);
         GlobalData.s.LastScore = ScoreManager.s.Score.Value;
         NetworkManager.Shutdown();
-        SceneManager.LoadScene("MainMenu");
+
+        GlobalData.s.WonMatch = false;
+        GlobalData.s.StarsEarned = 0;
+        GlobalData.s.TimeLeft = 0;
+        SceneManager.LoadScene("AfterMatchScene");
     }
 
     [ServerRpc(RequireOwnership = false)]
