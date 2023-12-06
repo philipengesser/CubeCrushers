@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
+/// <summary>
+/// The CubeSpawner is responsible for spawning the cubes you have to destroy. The cubes are instantiated on the server and then Spawned(i.e. Instantiated on the clients)
+/// </summary>
 public class CubeSpawner : NetworkBehaviour
 {
     //public GameObject CubePrefab;
@@ -29,7 +32,7 @@ public class CubeSpawner : NetworkBehaviour
     {
         float spawnX = Random.Range(-SpawnMaxX, SpawnMaxX);
         float spawnZ = Random.Range(-SpawnMaxZ, SpawnMaxZ);
-        Vector3 spawnPos = transform.position +
+        Vector3 spawnPos = transform.localPosition +
             (transform.right * spawnX) +
             (transform.forward * spawnZ);
         spawnPos.y = GlobalVariables.CubeHeight;

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
+/// <summary>
+/// This is the script that controls the ball the players will hit back and fourth. It is synchronized whenever one of the players hit it or it hits one of the back walls. This means the movement of the ball and all physics is all done locally and not synchronized. I did this to make the ball smooth and responsive on each client(Using NetworkTransforms/NetworkRigidbodies caused problems both with autority and the interpelation making the bounding look weird)
+/// </summary>
 public class GameBall : NetworkBehaviour
 {
     public static GameBall s;
@@ -68,6 +71,7 @@ public class GameBall : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        // when the ball spawns in send it towards player 1s side
         MyRigidbody.velocity = transform.forward * -2;
     }
 

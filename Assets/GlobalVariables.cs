@@ -8,7 +8,7 @@ public class GlobalVariables : MonoBehaviour
     public static bool ShowOppositeShortWall = false;
     public static float MatchTime = 120;
     public static float XPosition;
-    public static float YPosition;
+    public static float YPosition = 0;
     public static float ZPosition;
     public static int GroundHeight = -2;
     public static bool FakeGround = true;

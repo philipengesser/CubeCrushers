@@ -3,8 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class StartManager : MonoBehaviour
+/// <summary>
+/// Handles the start of the game, the start will always be initialized by the host. ImageLocalization may or may not be used for SharedAR before the game starts
+/// </summary>
+public class StartManager : NetworkBehaviour
 {
     public static StartManager s;
     private void Awake()
@@ -22,7 +26,19 @@ public class StartManager : MonoBehaviour
 
     // prefabs to spawn in when the game starts
     public GameObject GameBallPrefab;
-    
+
+    /// <summary>
+    /// This button should only be available for the host, after pressing it the match will start and new players will not be able to join the room
+    /// </summary>
+    public Button StartMatchButton;
+
+    private void Start()
+    {
+#if !UNITY_EDITOR
+        if (GlobalData.s.IsHost == false)
+            StartMatchButton.gameObject.SetActive(false);
+#endif
+    }
 
     public void StartMatch()
     {
@@ -32,8 +48,7 @@ public class StartManager : MonoBehaviour
         var obj = Instantiate(GameBallPrefab);
         obj.GetComponent<NetworkObject>().Spawn(true);
 
-        var obj2 = Instantiate(
-            CubeSpawnerPrefab, SharedSpaceManager.SharedArOriginObject.transform, false);
+        var obj2 = Instantiate(CubeSpawnerPrefab);
         obj2.GetComponent<NetworkObject>().Spawn(true);
 
         PreMatchUI.SetActive(false);
