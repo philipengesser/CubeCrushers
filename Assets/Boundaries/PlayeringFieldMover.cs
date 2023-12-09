@@ -8,9 +8,9 @@ public class PlayeringFieldMover : MonoBehaviour
     void Update()
     {
         transform.localPosition = new Vector3(
-            GlobalVariables.XPosition,
+            transform.localPosition.x,
             GlobalVariables.YPosition,
-            GlobalVariables.ZPosition
+            transform.localPosition.z
             );
     }
 }

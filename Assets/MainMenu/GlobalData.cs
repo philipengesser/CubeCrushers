@@ -24,4 +24,14 @@ public class GlobalData : MonoBehaviour
     public int HighScore;
     public string CurrentRoomName;
     public bool IsHost;
+    public int CurrentLevelIndex;
+    // The first int represents the levels index, the second int represents the number of stars obtained on that level
+    // using a dictionary instead of a list because it is a bit more dynamic for adding new levels
+    public Dictionary<int, int> LevelsCleared = new Dictionary<int, int>();
+
+    #region LastMatchStats
+    public bool WonMatch;
+    public int StarsEarned;
+    public float TimeLeft;
+    #endregion
 }

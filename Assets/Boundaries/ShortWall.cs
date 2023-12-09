@@ -73,7 +73,8 @@ public class ShortWall : MonoBehaviour
                     return;
 
                 Vector3 ballPosition = BallResetLocalPosition;
-                ScoreManager.s.DecreaseScoreServerRpc(2);
+                //ScoreManager.s.DecreaseScoreServerRpc(2);
+                TimerManager.s.DecreaseTimeServerRpc(20);
                 GameBall.s.ResetBallPositionStart(ballPosition, Vector3.zero);
             }
             else
@@ -81,7 +82,8 @@ public class ShortWall : MonoBehaviour
                 if (LosePointsOnHit)
                 {
                     //GlobalData.s.LastScore -= 3;
-                    ScoreManager.s.DecreaseScoreServerRpc(3);
+                    //ScoreManager.s.DecreaseScoreServerRpc(3);
+                    TimerManager.s.DecreaseTimeServerRpc(30);
                     WallSource.PlayOneShot(BackWallHitClip);
                 }
                 else

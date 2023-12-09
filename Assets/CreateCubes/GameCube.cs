@@ -3,31 +3,39 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
+public enum CubeType { NormalCube, SpeedCube, SlowCube, LaunchCube}
+
 public class GameCube : NetworkBehaviour
 {
     public Renderer MyRenderer;
     public AudioSource CubeHitSource;
     public bool DestroyVisualsRan;
-
-    //private void OnCollisionEnter(Collision collision)
-    //{
-    //    if (collision.gameObject.CompareTag("Ball"))
-    //    {
-    //        GlobalData.s.Score += 1;
-    //        DestroyCubeServerRpc(collision.GetContact(0).point);
-    //        //Destroy(this.gameObject);
-    //    }
-    //}
+    public CubeType CubeType;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Ball"))
         {
-            //GlobalData.s.LastScore += 1;
+            switch (CubeType)
+            {
+                case CubeType.NormalCube:
+                    break;
+                case CubeType.SpeedCube:
+                    GameBall.s.BallSpeedUpTimeLeft = 2f;
+                    break;
+                case CubeType.SlowCube:
+                    GameBall.s.BallSlowDownTimeLeft = .2f;
+                    break;
+                case CubeType.LaunchCube:
+                    GameBall.s.LaunchBallUp();
+                    break;
+                default:
+                    break;
+            }
+
             ScoreManager.s.IncreaseScoreServerRpc(1);
             DestroyCubeServerRpc(other.transform.position);
             StartCoroutine(DestoryCubeVisuals(other.transform.position));
-            //Destroy(this.gameObject);
         }
     }
 

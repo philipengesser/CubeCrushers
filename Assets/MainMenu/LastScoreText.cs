@@ -14,6 +14,6 @@ public class LastScoreText : MonoBehaviour
 
     private void Update()
     {
-        text.text = $"Last Score : {GlobalData.s.LastScore}";
+        text.text = $"Last Match Time : {GlobalData.s.TimeLeft}";
     }
 }

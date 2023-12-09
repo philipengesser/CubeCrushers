@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
+/// <summary>
+/// This is the script that controls the ball the players will hit back and fourth. It is synchronized whenever one of the players hit it or it hits one of the back walls. This means the movement of the ball and all physics is all done locally and not synchronized. I did this to make the ball smooth and responsive on each client(Using NetworkTransforms/NetworkRigidbodies caused problems both with autority and the interpelation making the bounding look weird)
+/// </summary>
 public class GameBall : NetworkBehaviour
 {
     public static GameBall s;
@@ -25,6 +28,33 @@ public class GameBall : NetworkBehaviour
 
     private bool resetingBallPosition;
 
+    [SerializeField]
+    private float ballSpeedUpTimeLeft;
+    public float BallSpeedUpTimeLeft
+    {
+        get { return ballSpeedUpTimeLeft; }
+        set
+        {
+            ballSpeedUpTimeLeft = value;
+            ballSlowDownTimeLeft = 0;
+        }
+    }
+    public float MinSpeedWhenSpedUp;
+
+    private float ballSlowDownTimeLeft;
+    public float BallSlowDownTimeLeft
+    {
+        get { return ballSlowDownTimeLeft; }
+        set
+        {
+            ballSlowDownTimeLeft = value;
+            ballSpeedUpTimeLeft = 0;
+        }
+    }
+    public float MaxSpeedWhenSlowedDown;
+
+    public float AllowAnyYVelocity;
+
     public void Awake()
     {
         s = this;
@@ -32,9 +62,42 @@ public class GameBall : NetworkBehaviour
 
     private void Update()
     {
-        print("Position : " + transform.position);
-        transform.localScale = new Vector3(1,1,1) * GlobalVariables.BallSize;
+        transform.localScale = new Vector3(1, 1, 1) * GlobalVariables.BallSize;
 
+        SetBallMaterial();
+        ModifyBallVelocity();
+
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        // when the ball spawns in send it towards player 1s side
+        //MyRigidbody.velocity = transform.forward * -2;
+    }
+
+    private void ModifyBallVelocity()
+    {
+        if (AllowAnyYVelocity > 0)
+            AllowAnyYVelocity -= Time.deltaTime;
+        else if (MyRigidbody.velocity.y > 7)
+            MyRigidbody.velocity = new Vector3(MyRigidbody.velocity.x, 5, MyRigidbody.velocity.z);
+    
+        if (BallSpeedUpTimeLeft > 0)
+        {
+            BallSpeedUpTimeLeft -= Time.deltaTime;
+            if (MyRigidbody.velocity.magnitude < MinSpeedWhenSpedUp)
+                MyRigidbody.velocity = MyRigidbody.velocity.normalized * MinSpeedWhenSpedUp;
+        }
+        else if (BallSlowDownTimeLeft > 0)
+        {
+            BallSlowDownTimeLeft -= Time.deltaTime;
+            if (MyRigidbody.velocity.magnitude > MaxSpeedWhenSlowedDown)
+                MyRigidbody.velocity = MyRigidbody.velocity.normalized * MaxSpeedWhenSlowedDown;
+        }
+    }
+
+    private void SetBallMaterial()
+    {
         if (JustHitByPlayer > 0)
         {
             MyRenderer.material = PlayerHitMat;
@@ -49,9 +112,17 @@ public class GameBall : NetworkBehaviour
         {
             MyRenderer.material = NormalMat;
         }
+    }
 
-        if (MyRigidbody.velocity.y > 7)
-            MyRigidbody.velocity = new Vector3(MyRigidbody.velocity.x, 5, MyRigidbody.velocity.z);
+    public void LaunchBallUp()
+    {
+        AllowAnyYVelocity = .2f;
+        if (MyRigidbody.velocity.magnitude > 5)
+        {
+            MyRigidbody.velocity = MyRigidbody.velocity.normalized * 5;
+        }
+
+        MyRigidbody.velocity += Vector3.up * 12;
     }
 
     private void OnCollisionEnter(Collision collision)

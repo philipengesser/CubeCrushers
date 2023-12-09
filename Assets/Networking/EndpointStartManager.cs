@@ -4,23 +4,22 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class EndpointStartManager : MonoBehaviour
+public class EndpointStartManager : NetworkBehaviour
 {
-    public NetworkManager NetworkManager;
-    public GameObject CubeSpawnerPrefab;
-    public SharedSpaceManager SharedSpaceManager;
-
-    // Start is called before the first frame update
-    void Start()
+    public override void OnNetworkSpawn()
     {
-        NetworkManager.OnServerStarted += OnServerStarted;
+        EndpointConnectedServerRpc();
     }
 
-    public void OnServerStarted()
+    [ServerRpc(RequireOwnership = false)]
+    public void EndpointConnectedServerRpc()
     {
-        var obj = Instantiate(
-            CubeSpawnerPrefab, SharedSpaceManager.SharedArOriginObject.transform, false);
+        SetLevelIndexClientRpc(GlobalData.s.CurrentLevelIndex);
+    }
 
-        obj.GetComponent<NetworkObject>().Spawn(true);
+    [ClientRpc]
+    public void SetLevelIndexClientRpc(int levelIndex)
+    {
+        GlobalData.s.CurrentLevelIndex = levelIndex;
     }
 }
