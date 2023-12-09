@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LevelManager : MonoBehaviour
+public class LevelManager : NetworkBehaviour
 {
     public List<Level> Levels;
     public float TwoStarTimeThreshold;
@@ -22,8 +23,6 @@ public class LevelManager : MonoBehaviour
         s = this;
     }
 
-    
-
     private void Start()
     {
         TimerManager.s.TimeLeft.Value = CurrentLevel.MatchTime;
@@ -38,6 +37,25 @@ public class LevelManager : MonoBehaviour
     {
         // note that I'm using the postfix increment operator in this case because I want to increment the value after getting the cube, I think this is the first time I've ever had a use for this nuanced feature, I recall in college one of the test questions was about prefix/postfix operators, fun times :)
         return CurrentLevel.CubesToSpawn[NextCubeIndex++];
+    }
+
+    [ClientRpc]
+    public void WinLevelClientRpc()
+    {
+        if (IsServer)
+        {
+            StartCoroutine(DelayedWinLevel(2));
+        }
+        else
+        {
+            StartCoroutine(DelayedWinLevel(0));
+        }
+    }
+
+    public IEnumerator DelayedWinLevel(int delay)
+    {
+        yield return new WaitForSeconds(delay);
+        WinLevel();
     }
 
     public void WinLevel()

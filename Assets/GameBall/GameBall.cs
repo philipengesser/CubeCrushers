@@ -72,7 +72,7 @@ public class GameBall : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         // when the ball spawns in send it towards player 1s side
-        MyRigidbody.velocity = transform.forward * -2;
+        //MyRigidbody.velocity = transform.forward * -2;
     }
 
     private void ModifyBallVelocity()

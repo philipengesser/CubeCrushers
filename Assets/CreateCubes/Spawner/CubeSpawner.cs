@@ -18,6 +18,7 @@ public class CubeSpawner : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        // The cubes are Instantiated on the server then we use the NGO Spawn function to add them to clients. That is why we only want this code to run on the server
         if (IsServer == false)
             return;
 
@@ -30,13 +31,14 @@ public class CubeSpawner : NetworkBehaviour
 
     public void SpawnCube()
     {
+        // generate a semi random position for the cube
         float spawnX = Random.Range(-SpawnMaxX, SpawnMaxX);
         float spawnZ = Random.Range(-SpawnMaxZ, SpawnMaxZ);
         Vector3 spawnPos = transform.localPosition +
             (transform.right * spawnX) +
             (transform.forward * spawnZ);
         spawnPos.y = GlobalVariables.CubeHeight;
-
+        // get the prefab for the next cube we want to spawn
         var cubePrefab = GetCubeToSpawn();
         if (cubePrefab == null)
             return;
@@ -44,6 +46,7 @@ public class CubeSpawner : NetworkBehaviour
         CurrentCube = 
             Instantiate(cubePrefab, spawnPos, Quaternion.identity);
         CurrentCube.transform.localScale = new Vector3(1, 1, 1) * GlobalVariables.CubeSize;
+        // Spawn the cube on all clients
         CurrentCube.GetComponent<NetworkObject>().Spawn(true);
     }
 
@@ -56,7 +59,7 @@ public class CubeSpawner : NetworkBehaviour
         }
         else
         {
-            LevelManager.s.WinLevel();
+            LevelManager.s.WinLevelClientRpc();
             return null;
         }
     }

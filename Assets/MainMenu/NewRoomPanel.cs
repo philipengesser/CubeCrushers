@@ -6,6 +6,9 @@ using UnityEngine.UI;
 using Niantic.Lightship.SharedAR.Colocalization;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// This allows players to enter the name for a new room and create it.
+/// </summary>
 public class NewRoomPanel : MonoBehaviour
 {
     public TMP_InputField RoomNameInput;
@@ -19,6 +22,7 @@ public class NewRoomPanel : MonoBehaviour
     {
         GlobalData.s.CurrentRoomName = RoomNameInput.text;
         GlobalData.s.IsHost = true;
+        // When this scene loads a new room will be created if the entered room name(GlobalData.s.CurrentRoomName) is different from any other existing room names
         SceneManager.LoadScene("Match");
     }
 

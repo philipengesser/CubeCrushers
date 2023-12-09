@@ -16,9 +16,7 @@ public class StartManager : NetworkBehaviour
         s = this;
     }
 
-    public NetworkManager NetworkManager;
     public GameObject CubeSpawnerPrefab;
-    public SharedSpaceManager SharedSpaceManager;
     public bool GameStarted;
 
     // gameobjects to disable when the match starts
@@ -40,12 +38,15 @@ public class StartManager : NetworkBehaviour
 #endif
     }
 
+    /// <summary>
+    /// Starts the match, should be called by the host after all clients have connected and they are ready to play
+    /// </summary>
     public void StartMatch()
     {
         if (NetworkManager.IsClient == false)
             NetworkManager.StartHost();
 
-        var obj = Instantiate(GameBallPrefab);
+        var obj = Instantiate(GameBallPrefab, new Vector3(0, 8, -8), Quaternion.identity);
         obj.GetComponent<NetworkObject>().Spawn(true);
 
         var obj2 = Instantiate(CubeSpawnerPrefab);
