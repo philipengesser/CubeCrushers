@@ -5,10 +5,12 @@ using UnityEngine.XR.ARFoundation;
 
 public class MatchSceneLoadedManager : MonoBehaviour
 {
-    public ARSession ARSession;
 
     private void Awake()
     {
-        //ARSession.Reset();
+        var xrManagerSettings = UnityEngine.XR.Management.XRGeneralSettings.Instance.Manager;
+        xrManagerSettings.DeinitializeLoader();
+        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex); // reload current scene
+        xrManagerSettings.InitializeLoaderSync();
     }
 }

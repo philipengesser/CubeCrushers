@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -21,6 +22,15 @@ public class LevelManager : NetworkBehaviour
     private void Awake()
     {
         s = this;
+
+        for (int i = 0; i < 10; i++)
+        {
+            Levels.Add(new Level() { CubesToSpawn = Levels[i].CubesToSpawn, MatchTime = 120 });
+        }
+        for (int i = 0; i < 10; i++)
+        {
+            Levels.Add(new Level() { CubesToSpawn = Levels[i].CubesToSpawn, MatchTime = 90 });
+        }
     }
 
     private void Start()
@@ -61,9 +71,9 @@ public class LevelManager : NetworkBehaviour
     public void WinLevel()
     {
         int stars = 1;
-        if (TimerManager.s.TimeLeft.Value > ThreeStarTimeThreshold)
+        if (TimerManager.s.TimeLeft.Value > CurrentLevel.MatchTime * ThreeStarTimeThreshold)
             stars = 3;
-        else if (TimerManager.s.TimeLeft.Value > TwoStarTimeThreshold)
+        else if (TimerManager.s.TimeLeft.Value > CurrentLevel.MatchTime * TwoStarTimeThreshold)
             stars = 2;
 
         GlobalData.s.WonMatch = true;

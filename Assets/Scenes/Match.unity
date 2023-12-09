@@ -218,6 +218,9 @@ GameObject:
   - component: {fileID: 68429386}
   - component: {fileID: 68429394}
   - component: {fileID: 68429395}
+  - component: {fileID: 68429398}
+  - component: {fileID: 68429397}
+  - component: {fileID: 68429396}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -475,6 +478,60 @@ MonoBehaviour:
   blendDistance: 0
   weight: 1
   sharedProfile: {fileID: 11400000, guid: 732b757289467b740b1b018b41f312df, type: 2}
+--- !u!114 &68429396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 68429384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 428eb62726fd471a8ae41b9d299b2c1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _targetFrameRate: 20
+--- !u!114 &68429397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 68429384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11aa8f461d05f45f68d7b81ed08f1f9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _targetFrameRate: 20
+  _optimalOcclusionDistanceMode: 0
+  _principalOccludee: {fileID: 0}
+  _isOcclusionSuppressionEnabled: 1
+  _semanticSegmentationManager: {fileID: 68429396}
+  _suppressionChannels:
+  - ground
+  - Ground
+  _isOcclusionStabilizationEnabled: 0
+  _meshManager: {fileID: 0}
+  _useCustomBackgroundMaterial: 0
+  _customBackgroundMaterial: {fileID: 0}
+--- !u!114 &68429398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 68429384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b15f82cc229284894964d2d30806969d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HumanSegmentationStencilMode: 0
+  m_HumanSegmentationDepthMode: 0
+  m_EnvironmentDepthMode: 1
+  m_EnvironmentDepthTemporalSmoothing: 1
+  m_OcclusionPreferenceMode: 0
 --- !u!1 &100482875 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5742406745905236344, guid: 73771f2a79e21084780bbcc5d16063ac, type: 3}
@@ -2467,7 +2524,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1852027428, guid: 192adb26eaab02c4fb188a18d7079716, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8035855092209837758, guid: 192adb26eaab02c4fb188a18d7079716, type: 3}
       propertyPath: m_RootOrder
@@ -2479,7 +2536,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8035855092209837758, guid: 192adb26eaab02c4fb188a18d7079716, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 8035855092209837758, guid: 192adb26eaab02c4fb188a18d7079716, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3111,20 +3168,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Levels:
+  - MatchTime: 180
+    CubesToSpawn: 000000000000000000000000
+  - MatchTime: 180
+    CubesToSpawn: 00000000000000000000000000000000
+  - MatchTime: 180
+    CubesToSpawn: 00000000000000000200000000000000
+  - MatchTime: 180
+    CubesToSpawn: 0200000000000000000000000200000000000000
+  - MatchTime: 180
+    CubesToSpawn: 0100000000000000000000000100000000000000
+  - MatchTime: 180
+    CubesToSpawn: 020000000000000002000000010000000200000000000000
+  - MatchTime: 180
+    CubesToSpawn: 010000000100000002000000010000000200000001000000
+  - MatchTime: 180
+    CubesToSpawn: 010000000000000003000000010000000300000000000000
   - MatchTime: 90
-    CubesToSpawn: 0000000000000000
-  - MatchTime: 90
-    CubesToSpawn: 020000000000000000000000
-  - MatchTime: 90
-    CubesToSpawn: 00000000020000000000000002000000
-  - MatchTime: 90
-    CubesToSpawn: 00000000000000000100000000000000
-  - MatchTime: 90
-    CubesToSpawn: 0000000000000000000000000000000000000000
-  - MatchTime: 90
-    CubesToSpawn: 030000000000000000000000000000000300000000000000
-  TwoStarTimeThreshold: 15
-  ThreeStarTimeThreshold: 30
+    CubesToSpawn: 03000000030000000000000003000000030000000000000003000000
+  - MatchTime: 180
+    CubesToSpawn: 0200000001000000000000000300000000000000030000000100000002000000
+  TwoStarTimeThreshold: 0.2
+  ThreeStarTimeThreshold: 0.4
   NextCubeIndex: 0
 --- !u!114 &1068408881
 MonoBehaviour:
@@ -3138,9 +3203,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b491e8a273c3ad140899231eabb84488, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NetworkManager: {fileID: 1288825038}
   CubeSpawnerPrefab: {fileID: 4938436985079771705, guid: 77296012b4fc1e24091c37dbb250f80f, type: 3}
-  SharedSpaceManager: {fileID: 498150696}
   GameStarted: 0
   PreMatchUI: {fileID: 286669487}
   GameBallPrefab: {fileID: 2150802432815746769, guid: 7bdbda1d297fd504e974d672c110bf0b, type: 3}
