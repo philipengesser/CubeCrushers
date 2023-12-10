@@ -21,7 +21,7 @@ public class GameCube : NetworkBehaviour
                 case CubeType.NormalCube:
                     break;
                 case CubeType.SpeedCube:
-                    GameBall.s.BallSpeedUpTimeLeft = 2f;
+                    GameBall.s.BallSpeedUpTimeLeft = 3f;
                     break;
                 case CubeType.SlowCube:
                     GameBall.s.BallSlowDownTimeLeft = .2f;
@@ -55,14 +55,14 @@ public class GameCube : NetworkBehaviour
     [ClientRpc]
     public void DestroyCubeClientRpc(Vector3 collisionPoint)
     {
-        if (DestroyVisualsRan)
-            return; 
-
         StartCoroutine(DestoryCubeVisuals(collisionPoint));
     }
 
     public IEnumerator DestoryCubeVisuals(Vector3 hitPoint)
     {
+        if (DestroyVisualsRan == true)
+            yield break;
+
         DestroyVisualsRan = true;
         CubeHitSource.Play();
         Material mat = MyRenderer.material;

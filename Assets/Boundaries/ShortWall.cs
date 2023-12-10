@@ -72,6 +72,7 @@ public class ShortWall : MonoBehaviour
                 if (closerPlayer == null || closerPlayer.IsOwner == false)
                     return;
 
+                SharedSceneSetup.s.FlashRed();
                 Vector3 ballPosition = BallResetLocalPosition;
                 //ScoreManager.s.DecreaseScoreServerRpc(2);
                 TimerManager.s.DecreaseTimeServerRpc(20);
@@ -85,6 +86,7 @@ public class ShortWall : MonoBehaviour
                     //ScoreManager.s.DecreaseScoreServerRpc(3);
                     TimerManager.s.DecreaseTimeServerRpc(30);
                     WallSource.PlayOneShot(BackWallHitClip);
+                    SharedSceneSetup.s.FlashRed();
                 }
                 else
                 {
